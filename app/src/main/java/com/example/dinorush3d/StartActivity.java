@@ -5,6 +5,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.jme3.math.ColorRGBA;
@@ -25,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StartActivity extends AppCompatActivity {
     private TextView scoreView,max_scoreView;
-    private Button restart_btn,home_btn;
+    private ImageButton restart_btn,home_btn;
     private  Thread thread;
     private int screenHeight,screenWidth;
     private JmeSurfaceView jsv;
@@ -94,7 +96,6 @@ public class StartActivity extends AppCompatActivity {
                                     screenWidth=jsv.getWidth();}
                                 if (game.IsGameOver()&&!game_over_flag){
 
-
                                     try {
                                         create_buttons();
                                     } catch (InterruptedException e) {
@@ -126,21 +127,22 @@ public class StartActivity extends AppCompatActivity {
 
     }
     public  void create_buttons() throws InterruptedException {
-        TimeUnit.SECONDS.sleep(1);
-        restart_btn = new Button(jsv.getContext());
+        restart_btn = new ImageButton(jsv.getContext());
 
-        restart_btn.setHeight(250);
-        restart_btn.setWidth(200);
+
+        restart_btn.setImageResource(R.drawable.icons_reset);
+        restart_btn.setScaleX(0.6f);
+        restart_btn.setScaleY(0.6f);
         restart_btn.setY(screenHeight/2-180);
         restart_btn.setX(screenWidth/2-180);
-        restart_btn.setText("restart");
+
         restart_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                game.new_game();
                 game_over_flag=false;
                 scoreView.setText("0");
                 restart_btn.setVisibility(View.GONE);
+                game.setNew_game_flag(true);
             }
         });
 

@@ -60,6 +60,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     private boolean game_over= false;
     private int max_score=0;
     private String fileName = "max_score.save";
+    private boolean new_game_flag=false;
     Texture green_texture;
     private double score;
     Spatial cactus_spat;
@@ -196,6 +197,8 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             if (score>max_score) max_score=(int) score;
             save();}}
         dino.update();
+        if (new_game_flag){new_game();
+        new_game_flag=false;}
 
 
 
@@ -207,15 +210,16 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-        if  (!dino.IsUp()&&(!dino.IsDown()))dino.setAnim("chrome dino jump");
+        if  (!dino.IsUp()&&(!dino.IsDown())&&dino.isAlive())dino.setAnim("chrome dino jump");
         if (name =="TAP"&&isPressed){
-            dino.SetUp(true);
+             dino.SetUp(true);
 
 
         }
 
-
-
+    }
+    public void setNew_game_flag(boolean flag){
+        new_game_flag=flag;
     }
     public int getMaxScore(){
         return max_score;
@@ -243,6 +247,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
     }
     public void new_game(){
+
         read_score();
         score=0;
         for (Cactus cact: cactus_arr){
