@@ -33,6 +33,7 @@ configurations.all {
     exclude group: 'org.jmonkeyengine', module: 'jme3-desktop'
 }
 dependencies {
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

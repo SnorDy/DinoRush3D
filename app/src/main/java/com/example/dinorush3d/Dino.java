@@ -26,16 +26,12 @@ public class Dino {
     public float jump_speed = 0.135f;
     private AnimComposer composer;
     private Node dino;
-    private BoundingVolume bv;
-   private Spatial spatial;
 
-    public Dino(Node dino, AnimComposer composer, Spatial spatial){
+
+    public Dino(Node dino, AnimComposer composer){
+
 
         this.composer=composer;
-        this.spatial = spatial;
-        dino.setModelBound(new BoundingBox());
-        dino.updateModelBound();
-
 
         this.dino = dino;
 //        composer = dino.getChild("_31").getControl(AnimComposer.class);
@@ -44,7 +40,7 @@ public class Dino {
         start_y=dino.getLocalTranslation().getY();
         jump_y=start_y+jump_speed*24;
 
-        composer.setGlobalSpeed(1.9f);
+        composer.setGlobalSpeed(1.6f);
         composer.setCurrentAction("chrome dino run");
 
 

@@ -5,7 +5,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -46,7 +48,7 @@ public class StartActivity extends AppCompatActivity {
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorRGBA.Gray.asIntARGB());
+            window.setStatusBarColor(Color.parseColor("#323232"));
         }
 
         jsv=new JmeSurfaceView(this);
@@ -61,7 +63,7 @@ public class StartActivity extends AppCompatActivity {
 
         scoreView = new TextView(jsv.getContext());
         scoreView.setText("0");
-        scoreView.setTextColor(ColorRGBA.DarkGray.asIntARGB());
+        scoreView.setTextColor(Color.parseColor("#00adb5"));
         scoreView.setHeight(150);
         scoreView.setWidth(500);
         scoreView.setPadding(40,10,0,0);
@@ -71,7 +73,7 @@ public class StartActivity extends AppCompatActivity {
 
         max_scoreView = new TextView(jsv.getContext());
         max_scoreView.setText(game.getMaxScore()+"");
-        max_scoreView.setTextColor(ColorRGBA.DarkGray.asIntARGB());
+        max_scoreView.setTextColor(Color.parseColor("#00adb5"));
         max_scoreView.setHeight(150);
         max_scoreView.setWidth(500);
         max_scoreView.setPadding(40,80,0,0);
@@ -130,11 +132,22 @@ public class StartActivity extends AppCompatActivity {
         restart_btn = new ImageButton(jsv.getContext());
 
 
-        restart_btn.setImageResource(R.drawable.icons_reset);
-        restart_btn.setScaleX(0.6f);
-        restart_btn.setScaleY(0.6f);
-        restart_btn.setY(screenHeight/2-180);
-        restart_btn.setX(screenWidth/2-180);
+        restart_btn.setImageResource(R.drawable.restart_icon);
+        restart_btn.setBackgroundColor(Color.TRANSPARENT);
+        restart_btn.setScaleX(0.8f);
+        restart_btn.setScaleY(0.8f);
+        restart_btn.setY(screenHeight/2-200);
+        restart_btn.setX(screenWidth/2-300);
+
+        home_btn = new ImageButton(jsv.getContext());
+
+
+        home_btn.setImageResource(R.drawable.home_icon);
+        home_btn.setBackgroundColor(Color.TRANSPARENT);
+        home_btn.setScaleX(0.8f);
+        home_btn.setScaleY(0.8f);
+        home_btn.setY(screenHeight/2-200);
+        home_btn.setX(screenWidth/2-100);
 
         restart_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,13 +155,24 @@ public class StartActivity extends AppCompatActivity {
                 game_over_flag=false;
                 scoreView.setText("0");
                 restart_btn.setVisibility(View.GONE);
+                home_btn.setVisibility(View.GONE);
                 game.setNew_game_flag(true);
+            }
+        });
+        home_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jsv.destroy();
+
+                Intent intent = new Intent(StartActivity.this,LaunchActivity.class);
+                startActivity(intent);
+                finishAffinity();
             }
         });
 
 
         addContentView(restart_btn,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
+        addContentView(home_btn,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
 }
