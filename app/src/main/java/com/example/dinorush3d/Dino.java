@@ -4,9 +4,12 @@ package com.example.dinorush3d;
 import android.util.Log;
 
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.SkinningControl;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
+import com.jme3.animation.Skeleton;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -26,10 +29,12 @@ public class Dino {
     public float jump_speed = 0.135f;
     private AnimComposer composer;
     private Node dino;
+    private Armature armature;
 
 
-    public Dino(Node dino, AnimComposer composer){
+    public Dino(Node dino, AnimComposer composer, Armature armature){
 
+        this.armature = armature;
 
         this.composer=composer;
 
@@ -57,11 +62,12 @@ public class Dino {
         Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
         composer.setCurrentAction("JumpOnce");}
         else if (s=="chrome dino death"){
-            Vector3f pos = dino.getLocalTranslation();
-            Action death = composer.action(s);
-            Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino run");
-            Action DeathOnce = composer.actionSequence("DeathOnce", death, doneTween);
-            composer.setCurrentAction("DeathOnce");
+//            Vector3f pos = dino.getLocalTranslation();
+//            Action death = composer.action(s);
+//            Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino run");
+//            Action DeathOnce = composer.actionSequence("DeathOnce", death, doneTween);
+//            composer.setCurrentAction("DeathOnce");
+            armature.applyInitialPose();
         }
         else composer.setCurrentAction(s);}
         else if (s=="chrome dino death"){

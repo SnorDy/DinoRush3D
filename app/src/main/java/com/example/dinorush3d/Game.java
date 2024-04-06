@@ -6,9 +6,12 @@ import android.widget.Button;
 
 
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.SkinningControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.Skeleton;
 import com.jme3.app.AndroidHarnessFragment;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
@@ -102,7 +105,6 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         background.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.attachChild(background);
 
-
         m = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         m.setBoolean("UseMaterialColors", true);
         m.setColor("Diffuse", ColorRGBA.fromRGBA255(0, 224, 206, 0));
@@ -121,8 +123,16 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 //        dino_mat.setColor("Diffuse",ColorRGBA.fromRGBA255(19,124,92,0));
 //        dino_mat.setColor("Ambient",ColorRGBA.fromRGBA255(19,124,92,0));
 //        player_model.setMaterial(dino_mat);
+
+
+
+
         dino_composer = player_model.getChild("_31").getControl(AnimComposer.class);
-        dino = new Dino(player_model, dino_composer);
+        SkinningControl sk = ((Node) player_model).getChild("_31").getControl(SkinningControl.class);
+        Armature armature =  sk.getArmature();
+        dino = new Dino(player_model, dino_composer,armature);
+
+
 
 
         cactus_spat = assetManager.loadModel("assets/cactus2.j3o");//расположение кактуса
@@ -178,6 +188,23 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         inputManager.addListener(this, "TAP");
 
 
+    }
+    public AnimControl findAnimControl(final Spatial parent) {
+        final AnimControl animControl = parent.getControl(AnimControl.class);
+        if (animControl != null) {
+            return animControl;
+        }
+
+        if (parent instanceof Node) {
+            for (final Spatial s : ((Node) parent).getChildren()) {
+                final AnimControl animControl2 = findAnimControl(s);
+                if (animControl2 != null) {
+                    return animControl2;
+                }
+            }
+        }
+
+        return null;
     }
 
     public void simpleUpdate(float f) {
