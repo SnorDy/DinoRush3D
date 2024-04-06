@@ -20,7 +20,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 public class Dino {
-    private boolean isAlive=true;
+    private boolean isAlive=true,isBent = false;;
     private boolean up = false,down=false;
     private float jump_y,start_y;
     public float jump_speed = 0.135f;
@@ -55,12 +55,24 @@ public class Dino {
         Action landOnce = composer.actionSequence("LandOnce", land, doneTween);
         Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
         Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
-        composer.setCurrentAction("JumpOnce");}}
+        composer.setCurrentAction("JumpOnce");}
         else if (s=="chrome dino death"){
+            Vector3f pos = dino.getLocalTranslation();
+            Action death = composer.action(s);
+            Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino run");
+            Action DeathOnce = composer.actionSequence("DeathOnce", death, doneTween);
+            composer.setCurrentAction("DeathOnce");
+        }
+        else composer.setCurrentAction(s);}
+        else if (s=="chrome dino death"){
+//            Vector3f pos = dino.getLocalTranslation();
+//            pos.setY(pos.getY()+0.3f);
+//            dino.setLocalTranslation(pos);
             Action death = composer.action(s);
             Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino idle");
             Action DeathOnce = composer.actionSequence("DeathOnce", death, doneTween);
             composer.setCurrentAction("DeathOnce");
+
         }
         else composer.setCurrentAction(s);
     }
@@ -95,6 +107,9 @@ public class Dino {
     public void setAlive(boolean alive) {
         isAlive = alive;
     }
+
+    public void setBent(boolean f){this.isBent= f;}
+    public boolean isBent(){return this.isBent;}
 
     public void update()  {
 

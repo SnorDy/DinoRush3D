@@ -15,6 +15,7 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
+import com.jme3.input.InputManager;
 import com.jme3.input.TouchInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
@@ -58,6 +59,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     private String fileName = "max_score.save";
     private boolean new_game_flag = false;
     private double score;
+    private int pterod_time = 2000;
     private long prevTime;
     private Spatial cactus_spat, cloud_spat,pterod_model;
     private Geometry background;
@@ -209,6 +211,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                         dino.setAlive(false);
                         dino.setAnim("chrome dino death");
                     }
+
                 }}}
             else {for (Cactus cact :cactus_arr){if (cact.isActive())cact.update();//если собирается,
                 // то ждем пока кактусы буду за пределами экрана
@@ -224,10 +227,16 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 pterod.setY(-0.1f);
                 rootNode.attachChild(pterod.getSpatial());
                 }
+            if (pterod.isActive()&&dino.intersect(pterod.getSpatial())>0){
+                dino.setAlive(false);
+                dino.setAnim("chrome dino death");
+            }
 
             long now = System.currentTimeMillis();
-            if (now%1200==0 &&dino.isAlive()&&!(pterod.isActive())){
-                pterod_is_ready=true;}
+            if (now%pterod_time==0 &&dino.isAlive()&&!(pterod.isActive())){
+                pterod_is_ready=true;
+                pterod_time = 1300+random.nextInt(500);
+            }
 
 
 
@@ -268,10 +277,30 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-        if (!dino.IsUp() && (!dino.IsDown()) && dino.isAlive()) dino.setAnim("chrome dino jump");
-        if (name == "TAP" && isPressed) {
-            dino.SetUp(true);
+        Vector2f pos = inputManager.getCursorPosition();
 
+        if (name == "TAP" && isPressed) {
+
+            if (pos.x>= cam.getWidth()/2){
+                if (!dino.IsUp() && (!dino.IsDown()) && dino.isAlive()) dino.setAnim("chrome dino jump");
+                 dino.SetUp(true);}
+            if (pos.x< cam.getWidth()/2){
+                if (!dino.IsUp() && (!dino.IsDown()) && dino.isAlive()) {dino.setAnim("chrome dino duck run");
+                dino.setBent(true);}
+               }
+
+            Log.d("TAP",cam.getWidth()+ " "+ inputManager.getCursorPosition());
+        }
+        else if( name=="TAP"&& !isPressed){
+            if (pos.x<cam.getWidth()){
+            if (dino.isBent()){
+                dino.setBent(false);
+                dino_composer.removeAction("chrome dino duck run");
+
+                dino.setAnim("chrome dino death");
+
+
+            }}
 
         }
 
@@ -329,6 +358,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         read_score();
         score = 0;
 
+
         for (Cactus cact : cactus_arr) {
             rootNode.detachChild(cact.getNode());
         }
@@ -337,14 +367,14 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         game_over = false;
         dino.setAnim("chrome dino run");
         dino.setAlive(true);
+        pterod.setActive(false);
+        rootNode.detachChild(pterod.getSpatial());
+        pterod_is_ready=false;
 
         prevTime = System.currentTimeMillis();//Время на начало потока
 
     }
 
-    public void setPterod_is_ready(boolean f) {
-        pterod_is_ready = f;
-    }
 
     public void read_score() {//чтение рекорда из файла
         File folder = JmeSystem.getStorageFolder();
