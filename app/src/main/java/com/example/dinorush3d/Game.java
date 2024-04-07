@@ -12,6 +12,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.app.AndroidHarnessFragment;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
@@ -54,7 +55,7 @@ import de.lessvoid.nifty.Nifty;
 public class Game extends SimpleApplication implements ActionListener, AnimEventListener {
     private Dino dino;
     private Material m;
-    private Node player_model;
+    private Node player_model,player_model2,anim_model;
     private AnimComposer dino_composer, pterod_composer;
     private File file;
     private boolean game_over = false;
@@ -105,6 +106,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         background.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.attachChild(background);
 
+
         m = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         m.setBoolean("UseMaterialColors", true);
         m.setColor("Diffuse", ColorRGBA.fromRGBA255(0, 224, 206, 0));
@@ -118,22 +120,24 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         player_model.setLocalScale(0.6f);
         player_model.setLocalTranslation(-2f, -2f, 3.5f);
         rootNode.attachChild(player_model);
+        player_model2= (Node) player_model.clone();
+        anim_model = (Node) player_model.getChild("_31").clone();
 //        Material dino_mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
 //        dino_mat.setBoolean("UseMaterialColors", true);Material.002
 //        dino_mat.setColor("Diffuse",ColorRGBA.fromRGBA255(19,124,92,0));
 //        dino_mat.setColor("Ambient",ColorRGBA.fromRGBA255(19,124,92,0));
 //        player_model.setMaterial(dino_mat);
-
-
-
-
         dino_composer = player_model.getChild("_31").getControl(AnimComposer.class);
-        SkinningControl sk = ((Node) player_model).getChild("_31").getControl(SkinningControl.class);
-        Armature armature =  sk.getArmature();
-        dino = new Dino(player_model, dino_composer,armature);
+        Node n = (Node) player_model.getChild("_31");
+        Node n1 =  (Node) n.getChild("body_30");
+        Log.d("SKELETON",((Node)n1).getChildren().toString());
 
-
-
+//        dino = new Dino(player_model, dino_composer);
+//        SkinningControl sk = player_model.getChild("_31").getControl(SkinningControl.class);
+//
+//        sk.setHardwareSkinningPreferred(false);
+//        Armature armature =  sk.getArmature();
+        dino = new Dino(player_model, dino_composer,player_model2);
 
         cactus_spat = assetManager.loadModel("assets/cactus2.j3o");//расположение кактуса
         cactus_spat.setMaterial(m);
@@ -188,23 +192,6 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         inputManager.addListener(this, "TAP");
 
 
-    }
-    public AnimControl findAnimControl(final Spatial parent) {
-        final AnimControl animControl = parent.getControl(AnimControl.class);
-        if (animControl != null) {
-            return animControl;
-        }
-
-        if (parent instanceof Node) {
-            for (final Spatial s : ((Node) parent).getChildren()) {
-                final AnimControl animControl2 = findAnimControl(s);
-                if (animControl2 != null) {
-                    return animControl2;
-                }
-            }
-        }
-
-        return null;
     }
 
     public void simpleUpdate(float f) {
@@ -322,9 +309,19 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             if (pos.x<cam.getWidth()){
             if (dino.isBent()){
                 dino.setBent(false);
-                dino_composer.removeAction("chrome dino duck run");
+                rootNode.detachChild(player_model);
+                player_model = (Node) player_model2.deepClone();
+                rootNode.attachChild(player_model);
+                dino_composer = player_model.getChild("_31").getControl(AnimComposer.class);
+                if (dino.isAlive()){
 
-                dino.setAnim("chrome dino death");
+                dino_composer.setCurrentAction("chrome dino run");
+                    dino.update_model(player_model,dino_composer);}
+
+                else {dino.update_model(player_model,dino_composer);dino.setAnim("chrome dino death");}
+
+
+
 
 
             }}

@@ -5,11 +5,9 @@ import android.util.Log;
 
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
-import com.jme3.anim.SkinningControl;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
-import com.jme3.animation.Skeleton;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -28,17 +26,20 @@ public class Dino {
     private float jump_y,start_y;
     public float jump_speed = 0.135f;
     private AnimComposer composer;
-    private Node dino;
-    private Armature armature;
+    private Node dino,init_dino;
+    private Node initDino;
 
 
-    public Dino(Node dino, AnimComposer composer, Armature armature){
 
-        this.armature = armature;
+
+    public Dino(Node dino, AnimComposer composer,Node dino1){
 
         this.composer=composer;
 
         this.dino = dino;
+        this.initDino = dino1;
+
+
 //        composer = dino.getChild("_31").getControl(AnimComposer.class);
 //        composer.setGlobalSpeed(1.5f);
 //        composer.setCurrentAction("chrome dino run");
@@ -61,16 +62,8 @@ public class Dino {
         Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
         Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
         composer.setCurrentAction("JumpOnce");}
-        else if (s=="chrome dino death"){
-//            Vector3f pos = dino.getLocalTranslation();
-//            Action death = composer.action(s);
-//            Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino run");
-//            Action DeathOnce = composer.actionSequence("DeathOnce", death, doneTween);
-//            composer.setCurrentAction("DeathOnce");
-            armature.applyInitialPose();
-        }
         else composer.setCurrentAction(s);}
-        else if (s=="chrome dino death"){
+        else if (s=="chrome dino death"&&!this.isBent){
 //            Vector3f pos = dino.getLocalTranslation();
 //            pos.setY(pos.getY()+0.3f);
 //            dino.setLocalTranslation(pos);
@@ -85,6 +78,7 @@ public class Dino {
     public boolean IsDown() {
         return down;
     }
+    public void update_model(Node model,AnimComposer composer){this.dino = model; this.composer = composer;}
 
     public int intersect(Spatial s){
 
