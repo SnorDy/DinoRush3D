@@ -54,15 +54,15 @@ public class Dino {
     }
     public void  setAnim(String s){
         if (isAlive()){
-        if (s=="chrome dino jump"){
-        Action jump = composer.action(s);
-        Action land = composer.action("chrome dino land");
-        Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino land");
-        Action landOnce = composer.actionSequence("LandOnce", land, doneTween);
-        Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
-        Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
-        composer.setCurrentAction("JumpOnce");}
-        else composer.setCurrentAction(s);}
+            if (s=="chrome dino jump"){
+                Action jump = composer.action(s);
+                Action land = composer.action("chrome dino land");
+                Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino land");
+                Action landOnce = composer.actionSequence("LandOnce", land, doneTween);
+                Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
+                Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
+                composer.setCurrentAction("JumpOnce");}
+            else composer.setCurrentAction(s);}
         else if (s=="chrome dino death"&&!this.isBent){
 //            Vector3f pos = dino.getLocalTranslation();
 //            pos.setY(pos.getY()+0.3f);
@@ -81,13 +81,15 @@ public class Dino {
     public void update_model(Node model,AnimComposer composer){this.dino = model; this.composer = composer;}
 
     public int intersect(Spatial s){
-
+        BoundingVolume bv;
         CollisionResults results = new CollisionResults();
         Vector3f v = dino.getWorldBound().getCenter();
 
-        BoundingVolume bv = new BoundingBox(v,0.1f,0.6f,0.6f);
+        if (this.isBent) bv = new BoundingBox(v,0.1f,0.4f,0.6f);
+        else bv = new BoundingBox(v,0.1f,0.6f,0.6f);
 
         return bv.collideWith(s.getWorldBound(),results);}
+
     public void SetDown(boolean down) {
         this.down = down;
     }
@@ -117,32 +119,32 @@ public class Dino {
 
             Log.d("DINO","ISALIVE "+isAlive());
             if (composer.getCurrentAction()!=null){
-            if (composer.getCurrentAction().toString().contains("chrome dino idle"))
-            composer.reset();}
+                if (composer.getCurrentAction().toString().contains("chrome dino idle"))
+                    composer.reset();}
             Vector3f pos = dino.getLocalTranslation();
             if (pos.getY()>start_y){
-            pos.setY(pos.getY()-jump_speed);}
+                pos.setY(pos.getY()-jump_speed);}
             else if (pos.getY()<start_y){
                 pos.setY(start_y);}
             dino.setLocalTranslation(pos);
         }
         else{
 
-        Vector3f pos = dino.getLocalTranslation();
+            Vector3f pos = dino.getLocalTranslation();
 
-        float y = pos.getY();
-        if (y>=jump_y){SetDown(true);SetUp(false);y=jump_y;}
-        if (y<=start_y){SetDown(false);y=start_y; }
+            float y = pos.getY();
+            if (y>=jump_y){SetDown(true);SetUp(false);y=jump_y;}
+            if (y<=start_y){SetDown(false);y=start_y; }
 
-        pos.setY(y);
+            pos.setY(y);
 
-        if ((IsUp())&&(y!=jump_y)) { pos.setY( (y+jump_speed-0.025f));}
-        else {SetDown(true);SetUp(false);}
+            if ((IsUp())&&(y!=jump_y)) { pos.setY( (y+jump_speed-0.025f));}
+            else {SetDown(true);SetUp(false);}
 
-        if ((y!=this.start_y)&&(IsDown())){pos.setY( (y-jump_speed));}
-        else {SetDown(false);}
-        if (composer.getCurrentAction().toString().contains("chrome dino land")&&(y==start_y)&&(!IsUp())) {
-            composer.setCurrentAction("chrome dino run");
+            if ((y!=this.start_y)&&(IsDown())){pos.setY( (y-jump_speed));}
+            else {SetDown(false);}
+            if (composer.getCurrentAction().toString().contains("chrome dino land")&&(y==start_y)&&(!IsUp())) {
+                composer.setCurrentAction("chrome dino run");
 
 
 //            composer.setCurrentAction("chrome dino run");
@@ -154,8 +156,8 @@ public class Dino {
 
 
 
-        }
-        dino.setLocalTranslation(pos);}
+            }
+            dino.setLocalTranslation(pos);}
 
 
 

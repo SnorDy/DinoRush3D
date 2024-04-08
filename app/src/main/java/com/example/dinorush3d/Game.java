@@ -157,6 +157,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         pterod = new Pterod((Node) pterod_model, pterod_composer, pterod_model, 5f);
         pterod_composer = ((Node) pterod_model).getChild("_18").getControl(AnimComposer.class);
         pterod_composer.setCurrentAction("pteranodon flying");
+        pterod_composer.setGlobalSpeed(1.5f);
         pterod_model.setLocalTranslation(0f, 0f, 3.5f);
         pterod_model.rotate(0, 1.5f, 0);
         pterod_model.setLocalScale(1.5f);
@@ -196,7 +197,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
     public void simpleUpdate(float f) {
 
-
+            prevTime+=1;
         if (dino.isAlive()) {
             update_score();
             Random random = new Random();
@@ -208,29 +209,29 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                     pterod_is_ready=false;
                     rootNode.detachChild(pterod.getSpatial());
                     GenerateCactus();
-                Log.d("PTEROD",""+pterod.isActive());}
+                    Log.d("PTEROD",""+pterod.isActive());}
             }
 
             if (!pterod_is_ready&&!pterod.isActive()){//если птеродактиль не летит и не собирается
-            for (int i = 0; i < 2; i++) {//обновляем положение кактусов
-                if (!cactus_arr[i].isActive()) {
-                    rootNode.detachChild(cactus_arr[i].getSpatial());
-                    float last_coords = cactus_arr[(i + 1) % cactus_arr.length].getSpatial().getLocalTranslation().getX();
-                    float coords = last_coords + 4f + random.nextFloat() + 8;
-                    cactus_arr[i] = new Cactus(cactus_spat.clone(), coords);
-                    rootNode.attachChild(cactus_arr[i].getSpatial());
-                } else {
-                    cactus_arr[i].update();
-                    if ((dino.intersect(cactus_arr[i].getSpatial()) > 0)) {
-                        dino.setAlive(false);
-                        dino.setAnim("chrome dino death");
-                    }
+                for (int i = 0; i < 2; i++) {//обновляем положение кактусов
+                    if (!cactus_arr[i].isActive()) {
+                        rootNode.detachChild(cactus_arr[i].getSpatial());
+                        float last_coords = cactus_arr[(i + 1) % cactus_arr.length].getSpatial().getLocalTranslation().getX();
+                        float coords = last_coords + 4f + random.nextFloat() + 8;
+                        cactus_arr[i] = new Cactus(cactus_spat.clone(), coords);
+                        rootNode.attachChild(cactus_arr[i].getSpatial());
+                    } else {
+                        cactus_arr[i].update();
+                        if ((dino.intersect(cactus_arr[i].getSpatial()) > 0)) {
+                            dino.setAlive(false);
+                            dino.setAnim("chrome dino death");
+                        }
 
-                }}}
+                    }}}
             else {for (Cactus cact :cactus_arr){if (cact.isActive())cact.update();//если собирается,
                 // то ждем пока кактусы буду за пределами экрана
-                else rootNode.detachChild(cact.getSpatial());
-                }}
+            else rootNode.detachChild(cact.getSpatial());
+            }}
 
             if (!cactus_arr[1].isActive()&&!cactus_arr[0].isActive()&&pterod_is_ready&&!pterod.isActive()){
                 // если созданы все условия для вылета, то спавним
@@ -238,18 +239,19 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
                 pterod.setActive(true);
                 pterod.setX(12);
-                pterod.setY(-0.1f);
+                pterod.setY(-1.6f+ random.nextFloat()/100);
                 rootNode.attachChild(pterod.getSpatial());
-                }
+            }
             if (pterod.isActive()&&dino.intersect(pterod.getSpatial())>0){
                 dino.setAlive(false);
+                if (!dino.isBent())
                 dino.setAnim("chrome dino death");
             }
 
             long now = System.currentTimeMillis();
-            if (now%pterod_time==0 &&dino.isAlive()&&!(pterod.isActive())){
+            if (prevTime%pterod_time==0&&pterod_time!=prevTime &&dino.isAlive()&&!(pterod.isActive())){
                 pterod_is_ready=true;
-                pterod_time = 1300+random.nextInt(500);
+                pterod_time = 1000+random.nextInt(500);
             }
 
 
@@ -271,8 +273,11 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             Log.d("CAMERA", "" + cam.getRotation().toAngleAxis(new Vector3f()));
 
         } else {
+
             if (!game_over) {
                 game_over = true;
+                if (dino.isBent()){
+                dino.setBent(false);dino.setAnim("chrome dino death");}
                 if (score > max_score) max_score = (int) score;
                 save();
                 pterod.setActive(false);
@@ -297,34 +302,37 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
             if (pos.x>= cam.getWidth()/2){
                 if (!dino.IsUp() && (!dino.IsDown()) && dino.isAlive()) dino.setAnim("chrome dino jump");
-                 dino.SetUp(true);}
+                dino.SetUp(true);}
             if (pos.x< cam.getWidth()/2){
                 if (!dino.IsUp() && (!dino.IsDown()) && dino.isAlive()) {dino.setAnim("chrome dino duck run");
-                dino.setBent(true);}
-               }
+                    dino.setBent(true);}
+            }
 
             Log.d("TAP",cam.getWidth()+ " "+ inputManager.getCursorPosition());
         }
         else if( name=="TAP"&& !isPressed){
             if (pos.x<cam.getWidth()){
-            if (dino.isBent()){
-                dino.setBent(false);
-                rootNode.detachChild(player_model);
-                player_model = (Node) player_model2.deepClone();
-                rootNode.attachChild(player_model);
-                dino_composer = player_model.getChild("_31").getControl(AnimComposer.class);
-                if (dino.isAlive()){
+                if (dino.isBent()){
+                    dino.setBent(false);
+                    rootNode.detachChild(player_model);
+                    player_model = (Node) player_model2.deepClone();
+                    rootNode.attachChild(player_model);
+                    dino_composer = player_model.getChild("_31").getControl(AnimComposer.class);
+                    dino_composer.setGlobalSpeed(1.5f);
+                    if (dino.isAlive()){
 
-                dino_composer.setCurrentAction("chrome dino run");
-                    dino.update_model(player_model,dino_composer);}
+                        dino_composer.setCurrentAction("chrome dino run");
+                        dino_composer.setGlobalSpeed(1.5f);
 
-                else {dino.update_model(player_model,dino_composer);dino.setAnim("chrome dino death");}
+                        dino.update_model(player_model,dino_composer);}
+
+                    else {dino.update_model(player_model,dino_composer);dino.setAnim("chrome dino death");}
 
 
 
 
 
-            }}
+                }}
 
         }
 
@@ -398,6 +406,9 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         prevTime = System.currentTimeMillis();//Время на начало потока
 
     }
+    public void update_speed(){
+        for (Cactus cactus: cactus_arr){cactus.se}
+    }
 
 
     public void read_score() {//чтение рекорда из файла
@@ -461,5 +472,3 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
 
 }
-
-
