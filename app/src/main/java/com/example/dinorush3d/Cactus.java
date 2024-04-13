@@ -13,6 +13,7 @@ public class Cactus extends GameObject{
     public Cactus(Spatial cactus,float x){
         super(cactus,true);
         this.spatial = cactus;
+
         this.node_cactus=(Node) cactus;
         node_cactus.setModelBound(new BoundingBox());
         node_cactus.updateModelBound();
@@ -29,6 +30,7 @@ public class Cactus extends GameObject{
         if (x< -10)this.isActive=false;
 
     }
+    public void setVx(float n){this.Vx=n;}
     public Node getNode(){return  node_cactus;}
     public boolean isActive() {
         return isActive;

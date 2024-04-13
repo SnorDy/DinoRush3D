@@ -58,13 +58,13 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     private Node player_model,player_model2,anim_model;
     private AnimComposer dino_composer, pterod_composer;
     private File file;
+    private float global_speed=0.15f;
     private boolean game_over = false;
     private int max_score = 0;
     private String fileName = "max_score.save";
     private boolean new_game_flag = false;
     private double score;
-    private int pterod_time = 2000;
-    private long prevTime;
+    private int pterod_time = 400;
     private Spatial cactus_spat, cloud_spat,pterod_model;
     private Geometry background;
     private Cloud[] cloud_arr = new Cloud[3];
@@ -82,7 +82,6 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         cam.setLocation(cam.getLocation().add(new Vector3f(0, 0, 1.5f)));
         read_score();
 
-        prevTime = System.currentTimeMillis();//Время на начало потока
 
         AmbientLight ambient = new AmbientLight();
         ambient.setColor(ColorRGBA.Gray);
@@ -160,7 +159,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         pterod_composer.setGlobalSpeed(1.5f);
         pterod_model.setLocalTranslation(0f, 0f, 3.5f);
         pterod_model.rotate(0, 1.5f, 0);
-        pterod_model.setLocalScale(1.5f);
+        pterod_model.setLocalScale(1.8f);
 
 
 
@@ -197,7 +196,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
     public void simpleUpdate(float f) {
 
-            prevTime+=1;
+
         if (dino.isAlive()) {
             update_score();
             Random random = new Random();
@@ -219,6 +218,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                         float last_coords = cactus_arr[(i + 1) % cactus_arr.length].getSpatial().getLocalTranslation().getX();
                         float coords = last_coords + 4f + random.nextFloat() + 8;
                         cactus_arr[i] = new Cactus(cactus_spat.clone(), coords);
+                        cactus_arr[i].setVx(global_speed);
                         rootNode.attachChild(cactus_arr[i].getSpatial());
                     } else {
                         cactus_arr[i].update();
@@ -228,7 +228,15 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                         }
 
                     }}}
-            else {for (Cactus cact :cactus_arr){if (cact.isActive())cact.update();//если собирается,
+            else {for (Cactus cact :cactus_arr){if (cact.isActive()) {
+                cact.update();
+                Log.d("READY","READY");
+
+                if ((dino.intersect(cact.getSpatial()) > 0)) {
+                    dino.setAlive(false);
+                    dino.setAnim("chrome dino death");
+                }
+            }//если собирается,
                 // то ждем пока кактусы буду за пределами экрана
             else rootNode.detachChild(cact.getSpatial());
             }}
@@ -239,7 +247,8 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
                 pterod.setActive(true);
                 pterod.setX(12);
-                pterod.setY(-1.6f+ random.nextFloat()/100);
+                pterod.setVx(global_speed);
+                pterod.setY(-1.75f);
                 rootNode.attachChild(pterod.getSpatial());
             }
             if (pterod.isActive()&&dino.intersect(pterod.getSpatial())>0){
@@ -249,10 +258,11 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             }
 
             long now = System.currentTimeMillis();
-            if (prevTime%pterod_time==0&&pterod_time!=prevTime &&dino.isAlive()&&!(pterod.isActive())){
+            if (now%pterod_time==0&&pterod_time!=now &&dino.isAlive()&&!(pterod.isActive())){
                 pterod_is_ready=true;
-                pterod_time = 1000+random.nextInt(500);
+                pterod_time = random.nextInt(600)+400;
             }
+            if (now%1000==0){global_speed+=0.008f;}
 
 
 
@@ -359,6 +369,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
 
             cactus_arr[i] = new Cactus(cactus_spat.clone(), coords);
+            cactus_arr[i].setVx(global_speed);
             rootNode.attachChild(cactus_arr[i].getSpatial());
             last_coords = coords;
         }
@@ -389,6 +400,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     public void new_game() {
         read_score();
         score = 0;
+        global_speed=0.15f;
 
 
         for (Cactus cact : cactus_arr) {
@@ -403,12 +415,9 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         rootNode.detachChild(pterod.getSpatial());
         pterod_is_ready=false;
 
-        prevTime = System.currentTimeMillis();//Время на начало потока
 
     }
-    public void update_speed(){
-        for (Cactus cactus: cactus_arr){cactus.se}
-    }
+
 
 
     public void read_score() {//чтение рекорда из файла
@@ -425,7 +434,6 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 } else {
                     file.createNewFile();
                     max_score = 0;
-                    Log.d("WRITE", "" + "NORMALNO");
                     save();
                 }
 

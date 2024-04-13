@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,8 +40,13 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth=size.x;
+        screenHeight = size.y;
         getSupportActionBar().hide();
-        Log.d("LAUNCH","WORKING");
+        Log.d("LAUNCH","WORKING "+ screenWidth+ " "+ screenHeight);
 
         Typeface tf = ResourcesCompat.getFont(this, R.font.energydimension);
 
@@ -89,7 +96,7 @@ public class StartActivity extends AppCompatActivity {
                         Thread.sleep(1000);
                         runOnUiThread(new Runnable() {
                             @Override
-                            public void run() {
+                            public void run() {//располоежение полей для вывода счета и рекорода
                                 scoreView.setText(game.getScore()+" ");
 
                                 if (max_scoreView.getText().equals("0")||game.IsGameOver()&&!game_over_flag){
@@ -128,7 +135,7 @@ public class StartActivity extends AppCompatActivity {
 
 
     }
-    public  void create_buttons() throws InterruptedException {
+    public  void create_buttons() throws InterruptedException {//создание кнопок рестарта и выхода при завершении игры
         restart_btn = new ImageButton(jsv.getContext());
 
 
@@ -137,7 +144,7 @@ public class StartActivity extends AppCompatActivity {
         restart_btn.setScaleX(0.8f);
         restart_btn.setScaleY(0.8f);
         restart_btn.setY(screenHeight/2-200);
-        restart_btn.setX(screenWidth/2-300);
+        restart_btn.setX(screenWidth/2-250);
 
         home_btn = new ImageButton(jsv.getContext());
 
@@ -147,7 +154,7 @@ public class StartActivity extends AppCompatActivity {
         home_btn.setScaleX(0.8f);
         home_btn.setScaleY(0.8f);
         home_btn.setY(screenHeight/2-200);
-        home_btn.setX(screenWidth/2-100);
+        home_btn.setX(screenWidth/2-50);
 
         restart_btn.setOnClickListener(new View.OnClickListener() {
             @Override

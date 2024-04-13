@@ -29,6 +29,7 @@ public class Pterod extends GameObject {
         this.spatial.setLocalTranslation(pos);
         if (pos.x<-5)this.setActive(false);
     }
+    public void setVx(float n){this.Vx=n;}
     public boolean isActive() {
         return isActive;
     }

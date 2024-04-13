@@ -44,7 +44,7 @@ public class Dino {
 //        composer.setGlobalSpeed(1.5f);
 //        composer.setCurrentAction("chrome dino run");
         start_y=dino.getLocalTranslation().getY();
-        jump_y=start_y+jump_speed*24;
+        jump_y=start_y+jump_speed*20;
 
         composer.setGlobalSpeed(1.6f);
         composer.setCurrentAction("chrome dino run");
@@ -85,7 +85,7 @@ public class Dino {
         CollisionResults results = new CollisionResults();
         Vector3f v = dino.getWorldBound().getCenter();
 
-        if (this.isBent) bv = new BoundingBox(v,0.1f,0.4f,0.6f);
+        if (this.isBent) bv = new BoundingBox(v,0.1f,0.35f,0.6f);
         else bv = new BoundingBox(v,0.1f,0.6f,0.6f);
 
         return bv.collideWith(s.getWorldBound(),results);}
