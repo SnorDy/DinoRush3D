@@ -78,10 +78,11 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
         viewPort.setBackgroundColor(ColorRGBA.fromRGBA255(50, 50, 50, 0));
 
-        cam.setRotation(new Quaternion().fromAngleAxis(2.9151156f, new Vector3f(0, 1, 0)));
+        cam.setRotation(new Quaternion().fromAngleAxis(2.9151156f, new Vector3f(0, 1, 0)));//изменение угла какмеры
         cam.setLocation(cam.getLocation().add(new Vector3f(0, 0, 1.5f)));
         read_score();
-
+        setDisplayFps(false);
+        setDisplayStatView(false);
 
         AmbientLight ambient = new AmbientLight();
         ambient.setColor(ColorRGBA.Gray);
@@ -188,7 +189,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
 
         flyCam.setEnabled(false);
-        inputManager.addMapping("TAP", new MouseButtonTrigger(TouchInput.ALL));
+        inputManager.addMapping("TAP", new MouseButtonTrigger(TouchInput.ALL));//добавление обработчика касаний
         inputManager.addListener(this, "TAP");
 
 
@@ -216,7 +217,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                     if (!cactus_arr[i].isActive()) {
                         rootNode.detachChild(cactus_arr[i].getSpatial());
                         float last_coords = cactus_arr[(i + 1) % cactus_arr.length].getSpatial().getLocalTranslation().getX();
-                        float coords = last_coords + 4f + random.nextFloat() + 8;
+                        float coords = last_coords + random.nextFloat()*10/2+10 ;
                         cactus_arr[i] = new Cactus(cactus_spat.clone(), coords);
                         cactus_arr[i].setVx(global_speed);
                         rootNode.attachChild(cactus_arr[i].getSpatial());
@@ -248,7 +249,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 pterod.setActive(true);
                 pterod.setX(12);
                 pterod.setVx(global_speed);
-                pterod.setY(-1.75f);
+                pterod.setY(-1.8f);
                 rootNode.attachChild(pterod.getSpatial());
             }
             if (pterod.isActive()&&dino.intersect(pterod.getSpatial())>0){
@@ -258,9 +259,9 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             }
 
             long now = System.currentTimeMillis();
-            if (now%pterod_time==0&&pterod_time!=now &&dino.isAlive()&&!(pterod.isActive())){
+            if (now%pterod_time==0&&pterod_time!=now &&dino.isAlive()&&!(pterod.isActive())){// если время пришло, то вылетаем
                 pterod_is_ready=true;
-                pterod_time = random.nextInt(600)+400;
+                pterod_time = random.nextInt(400)+400;
             }
             if (now%1000==0){global_speed+=0.008f;}
 

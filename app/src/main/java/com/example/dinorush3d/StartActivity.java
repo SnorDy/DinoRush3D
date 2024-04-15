@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.jme3.math.ColorRGBA;
+import com.jme3.system.AppSettings;
 import com.jme3.view.surfaceview.JmeSurfaceView;
 
 import java.util.concurrent.TimeUnit;
@@ -60,6 +61,7 @@ public class StartActivity extends AppCompatActivity {
 
         jsv=new JmeSurfaceView(this);
         game =new Game();
+
         jsv.setLegacyApplication(game);
         setContentView(jsv);
         jsv.startRenderer(0);
@@ -143,8 +145,8 @@ public class StartActivity extends AppCompatActivity {
         restart_btn.setBackgroundColor(Color.TRANSPARENT);
         restart_btn.setScaleX(0.8f);
         restart_btn.setScaleY(0.8f);
-        restart_btn.setY(screenHeight/2-200);
-        restart_btn.setX(screenWidth/2-250);
+        restart_btn.setY(screenHeight/2-150);
+        restart_btn.setX(screenWidth/2-150);
 
         home_btn = new ImageButton(jsv.getContext());
 
@@ -153,8 +155,8 @@ public class StartActivity extends AppCompatActivity {
         home_btn.setBackgroundColor(Color.TRANSPARENT);
         home_btn.setScaleX(0.8f);
         home_btn.setScaleY(0.8f);
-        home_btn.setY(screenHeight/2-200);
-        home_btn.setX(screenWidth/2-50);
+        home_btn.setY(screenHeight/2-150);
+        home_btn.setX(screenWidth/2-25);
 
         restart_btn.setOnClickListener(new View.OnClickListener() {
             @Override
