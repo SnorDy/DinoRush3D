@@ -26,41 +26,39 @@ public class Dino {
     private float jump_y,start_y;
     public float jump_speed = 0.135f;
     private AnimComposer composer;
-    private Node dino,init_dino;
-    private Node initDino;
+    private Node dino;
 
 
 
 
-    public Dino(Node dino, AnimComposer composer,Node dino1){
+
+    public Dino(Node dino, AnimComposer composer){
 
         this.composer=composer;
 
         this.dino = dino;
-        this.initDino = dino1;
 
 
 //        composer = dino.getChild("_31").getControl(AnimComposer.class);
 //        composer.setGlobalSpeed(1.5f);
 //        composer.setCurrentAction("chrome dino run");
         start_y=dino.getLocalTranslation().getY();
-        jump_y=start_y+jump_speed*24;
+        jump_y=start_y+jump_speed*20;
 
         composer.setGlobalSpeed(1.6f);
         composer.setCurrentAction("chrome dino run");
-
+        Action jump = composer.action("chrome dino jump");
+        Action land = composer.action("chrome dino land");
+        Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino land");
+        Action landOnce = composer.actionSequence("LandOnce", land, doneTween);
+        Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
+        Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
 
 
     }
     public void  setAnim(String s){
         if (isAlive()){
             if (s=="chrome dino jump"){
-                Action jump = composer.action(s);
-                Action land = composer.action("chrome dino land");
-                Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino land");
-                Action landOnce = composer.actionSequence("LandOnce", land, doneTween);
-                Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
-                Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);
                 composer.setCurrentAction("JumpOnce");}
             else composer.setCurrentAction(s);}
         else if (s=="chrome dino death"&&!this.isBent){
@@ -78,14 +76,20 @@ public class Dino {
     public boolean IsDown() {
         return down;
     }
-    public void update_model(Node model,AnimComposer composer){this.dino = model; this.composer = composer;}
+    public void update_model(Node model,AnimComposer composer){this.dino = model; this.composer = composer;
+        Action jump = composer.action("chrome dino jump");
+        Action land = composer.action("chrome dino land");
+        Tween doneTween = Tweens.callMethod(composer, "setCurrentAction", "chrome dino land");
+        Action landOnce = composer.actionSequence("LandOnce", land, doneTween);
+        Tween doneTween2 = Tweens.callMethod(composer, "setCurrentAction", "LandOnce");
+        Action jumpOnce = composer.actionSequence("JumpOnce", jump, doneTween2);}
 
     public int intersect(Spatial s){
         BoundingVolume bv;
         CollisionResults results = new CollisionResults();
         Vector3f v = dino.getWorldBound().getCenter();
 
-        if (this.isBent) bv = new BoundingBox(v,0.1f,0.4f,0.6f);
+        if (this.isBent) bv = new BoundingBox(v,0.1f,0.35f,0.6f);
         else bv = new BoundingBox(v,0.1f,0.6f,0.6f);
 
         return bv.collideWith(s.getWorldBound(),results);}
@@ -147,24 +151,9 @@ public class Dino {
                 composer.setCurrentAction("chrome dino run");
 
 
-//            composer.setCurrentAction("chrome dino run");
-//            Log.d("ISJUMP","NOJUMP "+ composer.getCurrentAction().toString());
-//            composer.setCurrentAction("chrome dino run");
-
-
-//            dino.rotate(-0.2f,0,0);
-
-
-
             }
             dino.setLocalTranslation(pos);}
 
-
-
     }
-
-
-
-
 
 }

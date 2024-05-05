@@ -8,15 +8,12 @@ import com.jme3.scene.Spatial;
 public class Pterod extends GameObject {
     private boolean isActive;
     private float Vx=0.1f;
-    private AnimComposer composer;
-    private Node pterod;
+
     private Spatial spatial;
 
-    public Pterod(Node pterod, AnimComposer composer,Spatial pterod_spatial,float x){
+    public Pterod(Node pterod,Spatial pterod_spatial,float x){
         super(pterod_spatial,true);
-        this.pterod=pterod;
         this.spatial=pterod_spatial;
-        this.composer = composer;
         Vector3f pos  = pterod.getLocalTranslation();
         pos.setX(x);
         pterod.setLocalTranslation(pos);
@@ -29,6 +26,7 @@ public class Pterod extends GameObject {
         this.spatial.setLocalTranslation(pos);
         if (pos.x<-5)this.setActive(false);
     }
+    public void setVx(float n){this.Vx=n;}
     public boolean isActive() {
         return isActive;
     }

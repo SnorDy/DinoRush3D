@@ -37,7 +37,8 @@
         android:text="quit"
         android:textColor="#14ffec"
         android:textSize="20sp"
-        app:cornerRadius="10dp"
+        app:cornerRadius="5dp"
+        app:iconTintMode="add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/start_btn"
@@ -67,6 +68,7 @@
         android:text="DinoRush"
         android:textColor="#14ffec"
         android:textSize="90sp"
+        app:drawableTint="#FDFDFD"
         app:layout_constraintBottom_toTopOf="@+id/start_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,6 +88,23 @@
         app:layout_constraintStart_toEndOf="@+id/gifImageView"
         app:layout_constraintTop_toBottomOf="@+id/quit_btn"
         app:layout_constraintVertical_bias="0.451" />
+
+    <Button
+        android:id="@+id/sound_btn"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="52dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/sound_on_icon"
+        app:backgroundTint="#14FFEC"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.459"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.043" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

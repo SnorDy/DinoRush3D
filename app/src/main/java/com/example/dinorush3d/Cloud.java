@@ -22,8 +22,11 @@ public class Cloud extends GameObject{
         float x = pos.getX();
         pos.setX(x-Vx);
         spatial.setLocalTranslation(pos);
-        if (x< -5)this.isActive=false;
+        if (x< -6)this.isActive=false;
 
+    }
+    public void setActive(boolean f){
+        this.isActive = f;
     }
     public boolean isActive() {
         return isActive;
