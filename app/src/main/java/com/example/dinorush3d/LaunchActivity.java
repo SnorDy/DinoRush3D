@@ -48,11 +48,13 @@ public class LaunchActivity extends AppCompatActivity {
                 startActivity(intent);
                 finishAffinity();
 
+
             }
         });
         btn_quit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menu_music.stop();
                 finishAffinity();
             }
         });

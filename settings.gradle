@@ -14,5 +14,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "DinoRush3D"
+rootProject.name = "DinoRush"
 include ':app'

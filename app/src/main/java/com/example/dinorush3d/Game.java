@@ -97,15 +97,13 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         game_music = new AudioNode(assetManager, "Sound/game_music.wav");
         game_music.setLooping(true);
         jump_sound = new AudioNode(assetManager,"Sound/jump.wav");
+        death_sound = new AudioNode(assetManager,"Sound/death.wav");
 
-
-//        setDisplayFps(false);
-//        setDisplayStatView(false);
-
+        //освещение на всей сцене
         AmbientLight ambient = new AmbientLight();
         ambient.setColor(ColorRGBA.Gray);
         rootNode.addLight(ambient);
-        Log.d("Start","START");
+
 
         Vector3f v = new Vector3f(3, -3f, 3);
         Box b1 = new Box(v, 14, 1f, 2.5f);
@@ -125,7 +123,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         m.setColor("Diffuse", ColorRGBA.fromRGBA255(0, 224, 206, 0));
         m.setColor("Ambient", ColorRGBA.fromRGBA255(0, 224, 206, 0));
 
-        player_model = (Node) assetManager.loadModel("assets/update_dino.j3o");
+        player_model = (Node) assetManager.loadModel("assets/dino.j3o");
         player_model.rotate(0, -1.5f, 0);
         player_model.setLocalScale(0.6f);
         player_model.setLocalTranslation(-2f, -2f, 3.5f);
@@ -135,7 +133,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         dino_composer = player_model.getChild("_31").getControl(AnimComposer.class);
         dino = new Dino(player_model, dino_composer);
 
-        cactus_spat = assetManager.loadModel("assets/cactus2.j3o");
+        cactus_spat = assetManager.loadModel("assets/cactus.j3o");
         cactus_spat.setMaterial(m);
         cactus_spat.setLocalScale(0.8f);
         cactus_spat.setLocalTranslation(0, -2f, 3.5f);
@@ -164,6 +162,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         pterod_model.rotate(0, 1.5f, 0);
         pterod_model.setLocalScale(1.8f);
 
+        //направленные источники света
         DirectionalLight l = new DirectionalLight();
         l.setDirection(new Vector3f(-1, -0.9f, -2f));
         rootNode.addLight(l);
@@ -182,24 +181,16 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         rootNode.attachChild(background);
         rootNode.attachChild(player_model);
 
-
-
     }
-
 
     public void simpleUpdate(float f) {
 
-        if (Integer.parseInt(fpsText.getText().split(" ")[3])>35){
+        if (Integer.parseInt(fpsText.getText().split(" ")[3])>40){//пока фпс меньше или равно 40 игра прогружается
             setDisplayFps(false);
             setDisplayStatView(false);
             is_started=true;
             game_music.play();
 
-
-
-
-
-        Log.d("NUMBER","2");
         if (dino.isAlive()) {
             update_score();
 
@@ -211,7 +202,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                     pterod_is_ready=false;
                     rootNode.detachChild(pterod.getSpatial());
                     GenerateCactus();
-                    Log.d("PTEROD",""+pterod.isActive());}
+                    }
             }
 
             if (!pterod_is_ready&&!pterod.isActive()){//если птеродактиль не летит и не собирается
@@ -230,6 +221,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                         cactus_arr[i].update();
                         if ((dino.intersect(cactus_arr[i].getSpatial()) > 0)) {
                             dino.setAlive(false);
+                            death_sound.play();
                             dino.setAnim("chrome dino death");
                         }
 
@@ -240,6 +232,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
                 if ((dino.intersect(cact.getSpatial()) > 0)) {
                     dino.setAlive(false);
+                    death_sound.play();
                     dino.setAnim("chrome dino death");
                 }
 
@@ -250,7 +243,6 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
 
             if (!cactus_arr[1].isActive()&&!cactus_arr[0].isActive()&&pterod_is_ready&&!pterod.isActive()){
                 // если созданы все условия для вылета, то спавним
-                Log.d("PTEROD_START",""+pterod.getSpatial().getLocalTranslation().getX());
 
                 pterod.setActive(true);
                 pterod.setX(13);
@@ -260,6 +252,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             }
             if (pterod.isActive()&&dino.intersect(pterod.getSpatial())>0){
                 dino.setAlive(false);
+                death_sound.play();
                 if (!dino.isBent())
                     dino.setAnim("chrome dino death");
             }
@@ -269,14 +262,12 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 pterod_is_ready=true;
                 pterod_time = random.nextInt(400)+400;
             }
-            if (now%1000==0){global_speed+=0.008f;}
-
-
+            if (now%1000==0){global_speed+=0.008f;}//постепенное ускорение
 
             for (int i = 0; i < cloud_arr.length; i++) {
                 if (!cloud_arr[i].isActive()) {
                     float last_coords;
-                   ArrayList<Float> l = new ArrayList<>();
+                   ArrayList<Float> l = new ArrayList<>();//список для определения самого дальнего кактуса
                    l.add(cloud_arr[0].getSpatial().getLocalTranslation().getX());
                    l.add(cloud_arr[1].getSpatial().getLocalTranslation().getX());
                    l.add(cloud_arr[2].getSpatial().getLocalTranslation().getX());
@@ -286,15 +277,11 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                     cloud_arr[i].setY(coords_y);
                     cloud_arr[i].setX(coords_x);
                     cloud_arr[i].setActive(true);
-                    Log.d("CLOUD",coords_x+" "+ coords_y+" "+ last_coords);
-
                 } else {
                     cloud_arr[i].update();
-                    Log.d("CLOUD",cloud_arr[i].getSpatial().getLocalTranslation().getX()+" "+i);
+
                 }
             }
-
-
 
         } else {
 
@@ -314,9 +301,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             new_game_flag = false;
         }
 
-
     }}
-
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
@@ -334,9 +319,9 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             }
 
         }
-        else if( name=="TAP"&& !isPressed){
+        else if( name=="TAP"&& !isPressed){//если палец оторван от экрана
             if (pos.x<cam.getWidth()){
-                if (dino.isBent()){
+                if (dino.isBent()){//если дино был согнгут, то возвращается в начальное положение
                     dino.setBent(false);
                     rootNode.detachChild(player_model);
                     player_model = (Node) player_model2.clone();
@@ -417,24 +402,17 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         read_score();
         score = 0;
         global_speed=0.15f;
-
-
         for (Cactus cact : cactus_arr) {
             rootNode.detachChild(cact.getNode());
         }
         GenerateCactus();
-
         game_over = false;
         dino.setAnim("chrome dino run");
         dino.setAlive(true);
         pterod.setActive(false);
         rootNode.detachChild(pterod.getSpatial());
         pterod_is_ready=false;
-
-
     }
-
-
 
     public void read_score() {//чтение рекорда из файла
         File folder = JmeSystem.getStorageFolder();
@@ -444,9 +422,6 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 if (file.exists()) {
                     FileInputStream fileIn = new FileInputStream(file);
                     max_score = fileIn.read();
-                    Log.d("READ", max_score + "");
-
-
                 } else {
                     file.createNewFile();
                     max_score = 0;

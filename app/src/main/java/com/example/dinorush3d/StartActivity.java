@@ -71,8 +71,6 @@ public class StartActivity extends AppCompatActivity {
         screenWidth=jsv.getWidth();
 
 
-        Log.d("SCREEN",screenHeight+ " "+ screenWidth);
-
         scoreView = new TextView(jsv.getContext());
         scoreView.setText("0");
         scoreView.setTextColor(Color.parseColor("#00adb5"));
@@ -120,7 +118,7 @@ public class StartActivity extends AppCompatActivity {
                             public void run() {
 
                                 if (game.Is_Started()){
-                                    Log.d("GAME START","START");
+
                                     loading_layout.setVisibility(View.GONE);
 
                                     loading_text.setVisibility(View.GONE);
@@ -171,12 +169,7 @@ public class StartActivity extends AppCompatActivity {
         };
 
         thread.start();
-
-
-//        FragmentManager fm = getSupportFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.add(new FirstFragment(),"FirstFragment");
-//        ft.commit();
+        //добавление элементов нрафического интерфейса на игровую активность
         addContentView(scoreView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         addContentView(max_scoreView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         addContentView(loading_layout,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));

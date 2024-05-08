@@ -121,7 +121,7 @@ public class Dino {
 
         if (!isAlive()){
 
-            Log.d("DINO","ISALIVE "+isAlive());
+
             if (composer.getCurrentAction()!=null){
                 if (composer.getCurrentAction().toString().contains("chrome dino idle"))
                     composer.reset();}
