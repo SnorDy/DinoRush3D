@@ -20,6 +20,19 @@ public class LaunchActivity extends AppCompatActivity {
 
     private boolean sound_on=true;
     private MediaPlayer menu_music;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        menu_music.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        menu_music.pause();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +59,7 @@ public class LaunchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LaunchActivity.this,StartActivity.class);
                 startActivity(intent);
+                menu_music.stop();
                 finishAffinity();
 
 
@@ -72,6 +86,7 @@ public class LaunchActivity extends AppCompatActivity {
                     sound_btn.setBackground(getResources().getDrawable(R.drawable.sound_on_icon));}
             }
         });
+
 
     }
 }

@@ -66,7 +66,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     private Node player_model,player_model2;
     private AnimComposer dino_composer, pterod_composer;
     private File file;
-    private float global_speed=0.15f;
+    private float global_speed=0.1f;
     private boolean game_over = false;
     private int max_score = 0;
     private String fileName = "max_score.save";
@@ -184,12 +184,16 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     }
 
     public void simpleUpdate(float f) {
+        int fps;
+        try {
+        fps = Integer.parseInt(fpsText.getText().split(" ")[3]);}
+        catch (Exception e) {fps =50;}
+            if (fps>40){//пока фпс меньше или равно 40 игра прогружается
+                setDisplayFps(false);
+                setDisplayStatView(false);
+                is_started=true;
+                game_music.play();}
 
-        if (Integer.parseInt(fpsText.getText().split(" ")[3])>40){//пока фпс меньше или равно 40 игра прогружается
-            setDisplayFps(false);
-            setDisplayStatView(false);
-            is_started=true;
-            game_music.play();
 
         if (dino.isAlive()) {
             update_score();
@@ -213,7 +217,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                         l.add(cactus_arr[1].getSpatial().getLocalTranslation().getX());
                         l.add(cactus_arr[2].getSpatial().getLocalTranslation().getX());
                         float last_coords = Collections.max(l);
-                        float coords = last_coords + random.nextFloat()*5+6f*(1+global_speed) ;
+                        float coords = last_coords + random.nextFloat()*5+6.5f*(1+global_speed) ;
                         cactus_arr[i].setX(coords);
                         cactus_arr[i].setActive(true);
 
@@ -245,7 +249,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 // если созданы все условия для вылета, то спавним
 
                 pterod.setActive(true);
-                pterod.setX(13);
+                pterod.setX(15);
                 pterod.setVx(global_speed);
                 pterod.setY(-1.75f);
                 rootNode.attachChild(pterod.getSpatial());
@@ -262,7 +266,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
                 pterod_is_ready=true;
                 pterod_time = random.nextInt(400)+400;
             }
-            if (now%1000==0){global_speed+=0.008f;}//постепенное ускорение
+            if (now%1000==0){global_speed+=0.015f;}//постепенное ускорение
 
             for (int i = 0; i < cloud_arr.length; i++) {
                 if (!cloud_arr[i].isActive()) {
@@ -301,7 +305,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
             new_game_flag = false;
         }
 
-    }}
+    }
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
@@ -366,7 +370,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
         Random random = new Random();
         for (int i = 0; i < cactus_arr.length; i++) {
 
-            float coords = last_coords + 4f + random.nextFloat() + 6;
+            float coords = last_coords + 4f + random.nextFloat() + 7;
 
 
             cactus_arr[i] = new Cactus(cactus_spatials[i], coords);
@@ -401,7 +405,7 @@ public class Game extends SimpleApplication implements ActionListener, AnimEvent
     public void new_game() {
         read_score();
         score = 0;
-        global_speed=0.15f;
+        global_speed=0.1f;
         for (Cactus cact : cactus_arr) {
             rootNode.detachChild(cact.getNode());
         }

@@ -213,6 +213,8 @@ public class StartActivity extends AppCompatActivity {
         home_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                restart_btn.setVisibility(View.GONE);
+                home_btn.setVisibility(View.GONE);
                 jsv.destroy();
 
                 Intent intent = new Intent(StartActivity.this,LaunchActivity.class);
