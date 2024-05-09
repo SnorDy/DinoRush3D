@@ -34,7 +34,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".StartActivity"
+            android:name=".GameActivity"
             android:exported="true"
             android:screenOrientation="landscape">
         </activity>

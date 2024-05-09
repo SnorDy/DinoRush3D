@@ -1,35 +1,25 @@
 package com.example.dinorush3d;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.jme3.math.ColorRGBA;
 import com.jme3.view.surfaceview.JmeSurfaceView;
 
-import java.util.concurrent.TimeUnit;
-
-public class StartActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
     private TextView scoreView,max_scoreView;
     private TextView loading_text;
     private ImageButton restart_btn,home_btn;
@@ -217,7 +207,7 @@ public class StartActivity extends AppCompatActivity {
                 home_btn.setVisibility(View.GONE);
                 jsv.destroy();
 
-                Intent intent = new Intent(StartActivity.this,LaunchActivity.class);
+                Intent intent = new Intent(GameActivity.this,LaunchActivity.class);
                 startActivity(intent);
                 finishAffinity();
             }

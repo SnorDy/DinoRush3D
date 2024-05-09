@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
-
-import com.jme3.math.ColorRGBA;
 
 public class LaunchActivity extends AppCompatActivity {
     private Button btn_start,btn_quit,sound_btn;
@@ -57,7 +54,7 @@ public class LaunchActivity extends AppCompatActivity {
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LaunchActivity.this,StartActivity.class);
+                Intent intent = new Intent(LaunchActivity.this, GameActivity.class);
                 startActivity(intent);
                 menu_music.stop();
                 finishAffinity();
